@@ -4,8 +4,43 @@
 	import Button from "../ui/button/button.svelte";
     import { Sun, Moon } from "lucide-svelte";
     import { toggleMode } from "mode-watcher";
+	import MikeLoader from "./MikeLoader.svelte";
+	import { enhance } from "$app/forms";
+	import type { SubmitFunction } from "@sveltejs/kit";
+	import type { ServerNews } from "$lib/types";
+	import { toast } from "svelte-sonner";
+	import { goto } from "$app/navigation";
 
     let showMobileMenu = false;
+    let signOutLoader = false;
+
+    const signOutNews: SubmitFunction = () => 
+    {
+        signOutLoader = true;
+
+        return async ({ result, update }) => 
+        {
+            const {status, data: {msg}} = result as ServerNews<{msg: string}>
+                
+            switch (status) {
+                case 200:
+                    toast.success("Goodbye!", {description: msg});
+                    $navState.session = null;
+                    goto("/login?thankYou=Goodbye!");
+                    signOutLoader = false;
+                    break;
+                
+                case 402:
+                    toast.error("Failed to log out!", {description: msg});
+                    signOutLoader = false;
+                    break;
+
+                default:
+                    break;
+            };
+            await update();
+        };
+    };
 
 </script>
 
@@ -17,9 +52,11 @@
     </Button>
 
     <div class="flex items-center gap-3">
-        <Button>
-            Logout
-        </Button>
+        <form method="POST" action="/login?/signOut" use:enhance={signOutNews}>
+            <Button type="submit">
+                <MikeLoader name="Log out" loader={signOutLoader} loader_name="Logging out.."  />
+            </Button>
+        </form>
     
         <Button on:click={toggleMode} variant="outline" size="icon">
             <Sun

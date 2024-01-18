@@ -88,6 +88,14 @@ export const actions: Actions = {
 
             return fail(403, {errors: fieldErrors});
         }
+    },
+
+    signOut: async ({request, locals: {supabase}}) => 
+    {
+        const {error: signOutError} = await supabase.auth.signOut();
+
+        if(signOutError) return fail(402, {msg: signOutError.message});
+        else return fail(200, {msg: "Signed out successfully."});
     }
 
 };
