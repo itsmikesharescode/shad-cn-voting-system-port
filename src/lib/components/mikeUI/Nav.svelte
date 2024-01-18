@@ -45,13 +45,18 @@
         </div>
 
             {#each $navState.adminNav as navigation }
-                <div class="p-2 bg-slate-400">{navigation.category}</div>
-                <div class="flex flex-col gap-2 p-2">
+
+                <div class="font-bold border-b-2 p-2">{navigation.category}</div>
+
+                <div class="flex flex-col gap-2 p-4">
+
                     {#each navigation.items as item }
-                        <a href={item.url} class="p-2 {$navState.activeItem === item.url ? "bg-[#000000b7] text-white dark:bg-[#ffffff4b]" : ""}"
+                        <a href={item.url} 
+                        class="p-2 hover:bg-slate-700 hover:text-white {$navState.activeItem === item.url ? "bg-[#000000b7] text-white dark:bg-[#ffffff4b]" : ""}"
                         on:click={() => $navState.activeItem = item.url}
                         >{item.title}</a>
                     {/each}
+
                 </div>
             {/each}
 
