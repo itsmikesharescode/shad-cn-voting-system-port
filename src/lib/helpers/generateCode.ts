@@ -10,4 +10,4 @@ export const generateCode = (length: number) => {
     }
 
     return result;
-}
+};

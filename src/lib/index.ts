@@ -1,5 +1,6 @@
 import type { Session } from "@supabase/supabase-js";
 import {writable} from "svelte/store";
+import type { CreatedCandidateTB, CreatedPositionTB } from "./types";
 
 export const navState = writable({
     activeItem: "",
@@ -60,4 +61,15 @@ export const navState = writable({
         },
 
     ]
-})
+});
+
+
+//create position admin state management
+export const positionState = writable({
+    createdPositions:<CreatedPositionTB[] | null> null,
+});
+
+//create candidate admin state management
+export const candidateState = writable({
+    createdCandidates:<CreatedCandidateTB[] | null> null,
+});

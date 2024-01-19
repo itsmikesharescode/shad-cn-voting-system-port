@@ -39,9 +39,14 @@
                 
             switch (status) {
                 case 200:
+                    const {user: {user_metadata: {role}}} = session;
+                    console.log(role)
                     $navState.session = session;
                     toast.success("Welcome Back!", {description: msg});
                     loginLoader = false;
+                    if(role === "Admin") goto("/admin/dashboard");
+                    else if(role === "Voter") goto("/voter");
+
                     break;
                 
                 case 402:

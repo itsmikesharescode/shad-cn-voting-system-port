@@ -1,8 +1,19 @@
-import { fail, type Actions } from "@sveltejs/kit";
+import { fail, redirect, type Actions } from "@sveltejs/kit";
 import { loginSchema, registerSchema, resetPassSchema } from "$lib/helpers/schemas/login";
 import {ZodError, z} from "zod";
 import { generateCode } from "$lib/helpers/generateCode";
+import type { PageServerLoad } from "./$types";
 
+export const load: PageServerLoad = async ({locals: {getSession, supabase}}) => {
+    const session = await getSession();
+
+    if(session){
+        const {data:whoareyou, error:whoareyouError} = await supabase.rpc("who_are_you");
+        
+        if(whoareyou === "Admin") throw redirect(302, "/admin/dashboard");
+        else if(whoareyou === "Voter") throw redirect(302, "/voter");
+    }
+};
 
 export const actions: Actions = {
 
@@ -36,13 +47,16 @@ export const actions: Actions = {
 
             if(result.confirmPass === result.password){
 
+                const share_code = generateCode(12);
+
                 const {data:{session}, error:registerError} = await supabase.auth.signUp({
                     email: result.email,
                     password: result.password,
                     options: {
                         data: {
                             username: result.username,
-                            role: result.role
+                            role: result.role,
+                            share_code,
                         }
                     }
                 });
@@ -52,14 +66,13 @@ export const actions: Actions = {
                 else if(session){
                     
                     if(result.role === "Admin"){
-                        const share_code = generateCode(12);
 
                         const {error:insertAdminError} = await supabase.from("user_list").insert([{
                             user_id: session.user.id,
                             user_email: session.user.email,
                             role_name: session.user.user_metadata.role,
                             username: session.user.user_metadata.username,
-                            share_code,
+                            share_code: session.user.user_metadata.share_code,
                         }]);
                         console.log(insertAdminError?.message)
                         if(insertAdminError) return fail(402, {msg: insertAdminError.message});

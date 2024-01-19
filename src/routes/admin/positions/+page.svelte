@@ -4,6 +4,21 @@
     import { Separator } from "$lib/components/ui/separator";
     import * as Card from "$lib/components/ui/card";
 	import CreatePosition from "./CreatePosition.svelte";
+	import type { PageServerData } from "./$types";
+	import { onMount } from "svelte";
+	import { navState, positionState } from "$lib";
+	import { dateConvert } from "$lib/helpers/convertDate";
+	import DeletePosition from "./DeletePosition.svelte";
+
+    export let data: PageServerData;
+
+    let {session, createdPosition} = data;
+
+    onMount( () => {
+        if(session) $navState.session = session, $positionState.createdPositions = createdPosition;
+    });
+
+
 </script>
 
 <div class="mx-auto">
@@ -25,21 +40,22 @@
         <Table.Header class="truncate">
             <Table.Row>
                 <Table.Head class="w-full">Position</Table.Head>
-                <Table.Head >Vote Limit</Table.Head>
                 <Table.Head>Date Created</Table.Head>
+                <Table.Head >Vote Limit</Table.Head>
                 <Table.Head class="">Options</Table.Head>
             </Table.Row>
         </Table.Header>
     
         <Table.Body>
-            {#each ["","","","","","","","","","","","","","","","","","",] as invoice, i (i)}
+            {#each $positionState.createdPositions ?? [] as position, index}
                 <Table.Row>
-                    <Table.Cell class="font-medium">Precident</Table.Cell>
-                    <Table.Cell class="text-center">1</Table.Cell>
-                    <Table.Cell>Nov 6 1996</Table.Cell>
+                    <Table.Cell class="font-medium">{position.position_name}</Table.Cell> 
+                    <Table.Cell class="truncate">{dateConvert(position.created_at)}</Table.Cell>
+                    <Table.Cell class="text-center">{position.vote_limit}</Table.Cell>
                     <Table.Cell class="flex gap-2 items-center">
-                        <Button class="" variant="destructive">Delete</Button>
-                        <Button class="" >Edit</Button>
+                        
+                        <DeletePosition {position} />
+                       
                     </Table.Cell>
                 </Table.Row>
             {/each}
@@ -50,19 +66,20 @@
 
 <!--Mobile View-->
 <div class=" max-h-[70dvh] overflow-auto md:hidden flex flex-wrap gap-4 justify-center">
-    {#each ["","","","","","","","","","","","","","","","","","",] as invoice, i (i)}
+    {#each $positionState.createdPositions ?? [] as position, index}
         <Card.Root class="w-full sm:max-w-[45%] shadow-sm shadow-black dark:shadow-white">
             
             <Card.Header class="">
-                <Card.Title class="text-2xl">Precedent</Card.Title>
-                <Card.Description class="text-xs font-bold"> Vote Limit: 1</Card.Description>
-                <Card.Description class="text-xs font-bold"> Date Created: Nov 6 1996</Card.Description>
+                <Card.Title class="text-2xl">{position.position_name}</Card.Title>
+                <Card.Description class="text-xs font-bold"> Vote Limit: {position.vote_limit}</Card.Description>
+                <Card.Description class="text-xs font-bold"> Date Created: {dateConvert(position.created_at)}</Card.Description>
             </Card.Header>
 
 
             <Card.Footer class="flex justify-end gap-2 items-center">
-                <Button class="" variant="destructive">Delete</Button>
-                <Button class="" >Edit</Button>
+                
+                <DeletePosition {position}  />
+
             </Card.Footer>
 
         </Card.Root>

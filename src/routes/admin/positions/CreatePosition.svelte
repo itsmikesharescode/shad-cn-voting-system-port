@@ -7,9 +7,9 @@
 	import type { SubmitFunction } from "@sveltejs/kit";
 	import { enhance } from "$app/forms";
 	import type { Session } from "@supabase/supabase-js";
-	import type { ServerNews } from "$lib/types";
+	import type { ServerNews, CreatedPositionTB } from "$lib/types";
 	import { toast } from "svelte-sonner";
-	import { navState } from "$lib";
+	import { navState, positionState } from "$lib";
 	import MikeLoader from "$lib/components/mikeUI/MikeLoader.svelte";
 
     type CreatePositionValidation = {
@@ -20,12 +20,14 @@
     type CreatePositionNews = {
         session: Session
         msg: string
-        createdPositions: any
+        createdPositions: CreatedPositionTB[]
         errors: CreatePositionValidation
     };
 
     let inputErrors: CreatePositionValidation | null = null;
     let createPositionLoader = false;
+    let showDesktopDialog = false;
+    let showMobileDialog = false;
 
     const createPositionNews: SubmitFunction = () => 
     {
@@ -38,12 +40,22 @@
             switch (status) {
                 case 200:
                     $navState.session = session;
-
+                    $positionState.createdPositions = createdPositions;
                     toast.success("Success!", {description: msg});
                     createPositionLoader = false;
+                    showDesktopDialog = false;
+                    showMobileDialog = false;
                     break;
                 
                 case 402:
+                    
+                    if(msg === `duplicate key value violates unique constraint "created_position_position_name_key"`){
+                        toast.error("Failed to create position", {description: "Position name already exist try another one."});
+                        createPositionLoader = false;
+                        inputErrors = null;
+                        break;
+                    }
+
                     toast.error("Failed to create position!", {description: msg});
                     createPositionLoader = false;
                     inputErrors = null;
@@ -60,12 +72,13 @@
             await update();
         };
     };
+
     
 </script>
 
 
 <div class="hidden md:block">
-    <Dialog.Root>
+    <Dialog.Root bind:open={showDesktopDialog}>
 
         <Dialog.Trigger asChild let:builder>
             <Button builders={[builder]}>Create Position</Button>
@@ -102,7 +115,7 @@
 </div>
 
 <div class="md:hidden">
-    <Drawer.Root >
+    <Drawer.Root bind:open={showMobileDialog} >
 
         <Drawer.Trigger asChild let:builder>
             <Button builders={[builder]}>Create Position</Button>
