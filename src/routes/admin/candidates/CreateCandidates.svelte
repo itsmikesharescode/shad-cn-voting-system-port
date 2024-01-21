@@ -70,149 +70,69 @@
     
 </script>
 
+<Dialog.Root bind:open={showDesktopDialog}>
 
-<div class="hidden md:block">
-    <Dialog.Root bind:open={showDesktopDialog}>
-
-        <Dialog.Trigger asChild let:builder>
-            <Button builders={[builder]}>Create Candidate</Button>
-        </Dialog.Trigger>
-        
-        <Dialog.Content class="sm:max-w-[425px] shadow-sm shadow-black dark:shadow-white">
-        
-            <Dialog.Header>
-                <Dialog.Title>Create Candidate</Dialog.Title>
-                <Dialog.Description>This will establish a candidate that voters can vote on.</Dialog.Description>
-            </Dialog.Header>
-
-            <form method="POST" action="?/createCandidate" enctype="multipart/form-data" use:enhance={createCandidateNews} class="flex flex-col gap-4">
-                
-                <Label for="position">Positions:</Label>
-                <Select.Root portal={null}>
+    <Dialog.Trigger asChild let:builder>
+        <Button builders={[builder]}>Create Candidate</Button>
+    </Dialog.Trigger>
     
-                    <Select.Trigger class="border-slate-400 dark:border-slate-700">
-                        <Select.Value placeholder="Select a position" />
-                    </Select.Trigger>
+    <Dialog.Content class="sm:max-w-[425px] shadow-sm shadow-black dark:shadow-white">
     
-                    <Select.Content class="border-slate-400 dark:border-slate-700 mt-2">
-    
-                        <Select.Group>
-                            {#each $positionState.createdPositions ?? [] as position }
-                                <Select.Item value={JSON.stringify(position)}>{position.position_name}</Select.Item>
-                            {/each}
-                        </Select.Group>
-    
-                    </Select.Content>
-    
-                    <Select.Input name="position" />
-    
-                </Select.Root>
-                {#each inputErrors?.position ?? [] as err }
-                    <p class="text-red-700 font-bold text-xs px-2">{err}</p>
-                {/each}
-               
-                <Label for="candidateName">Candidate Name:</Label>
-                <Input name="candidateName" type="text" id="candidateName" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate name"/>
-                {#each inputErrors?.candidateName ?? [] as err }
-                    <p class="text-red-700 font-bold text-xs px-2">{err}</p>
-                {/each}
-                
-                <Label for="organization">Organization:</Label>
-                <Input name="organization" type="text" id="organization" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate organization"/>
-                {#each inputErrors?.organization ?? [] as err }
-                    <p class="text-red-700 font-bold text-xs px-2">{err}</p>
-                {/each}
+        <Dialog.Header>
+            <Dialog.Title>Create Candidate</Dialog.Title>
+            <Dialog.Description>This will establish a candidate that voters can vote on.</Dialog.Description>
+        </Dialog.Header>
 
-                <Label for="agenda">Agenda:</Label>
-                <Input name="agenda" type="text" id="agenda" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate agenda"/>
-                {#each inputErrors?.agenda ?? [] as err }
-                    <p class="text-red-700 font-bold text-xs px-2">{err}</p>
-                {/each}
-
-                <Button type="submit">
-                    <MikeLoader name="Create Candidate" loader={createCandidateLoader} loader_name="Creating.." />
-                </Button>
-            </form>
-
-        </Dialog.Content>
-
-    </Dialog.Root>
-</div>
-
-<div class="md:hidden">
-    <Drawer.Root bind:open={showMobileDialog} >
-
-        <Drawer.Trigger asChild let:builder>
-            <Button builders={[builder]}>Create Position</Button>
-        </Drawer.Trigger>
-
-        <Drawer.Content>
-
-            <Drawer.Header class="text-left">
-                <Drawer.Title>Create Candidate</Drawer.Title>
-                <Drawer.Description>This will establish a candidate that voters can vote on.</Drawer.Description>
-            </Drawer.Header>
-
-            <form method="POST" action="?/createCandidate" enctype="multipart/form-data" use:enhance={createCandidateNews} class="">
-
-                <div class="flex flex-col gap-4 p-4">
-                    <Label for="position">Positions:</Label>
-                    <Select.Root portal={null}>
-        
-                        <Select.Trigger class="border-slate-400 dark:border-slate-700">
-                            <Select.Value placeholder="Select a position" />
-                        </Select.Trigger>
-        
-                        <Select.Content class="border-slate-400 dark:border-slate-700 mt-2">
-        
-                            <Select.Group>
-                                {#each $positionState.createdPositions ?? [] as position }
-                                    <Select.Item value={JSON.stringify(position)}>{position.position_name}</Select.Item>
-                                {/each}
-                            </Select.Group>
-        
-                        </Select.Content>
-        
-                        <Select.Input name="position" />
-        
-                    </Select.Root>
-                    {#each inputErrors?.position ?? [] as err }
-                        <p class="text-red-700 font-bold text-xs px-2">{err}</p>
-                    {/each}
-                
-                    <Label for="candidateName">Candidate Name:</Label>
-                    <Input name="candidateName" type="text" id="candidateName" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate name"/>
-                    {#each inputErrors?.candidateName ?? [] as err }
-                        <p class="text-red-700 font-bold text-xs px-2">{err}</p>
-                    {/each}
-
-
-                    <Label for="organization">Organization:</Label>
-                    <Input name="organization" type="text" id="organization" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate organization"/>
-                    {#each inputErrors?.organization ?? [] as err }
-                        <p class="text-red-700 font-bold text-xs px-2">{err}</p>
-                    {/each}
-
-
-                    <Label for="agenda">Agenda:</Label>
-                    <Input name="agenda" type="text" id="agenda" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate agenda"/>
-                    {#each inputErrors?.agenda ?? [] as err }
-                        <p class="text-red-700 font-bold text-xs px-2">{err}</p>
-                    {/each}
-                </div>
+        <form method="POST" action="?/createCandidate" enctype="multipart/form-data" use:enhance={createCandidateNews} class="flex flex-col gap-4">
             
+            <Label for="position">Positions:</Label>
+            <Select.Root portal={null}>
+
+                <Select.Trigger class="border-slate-400 dark:border-slate-700">
+                    <Select.Value placeholder="Select a position" />
+                </Select.Trigger>
+
+                <Select.Content class="border-slate-400 dark:border-slate-700 mt-2">
+
+                    <Select.Group>
+                        {#each $positionState.createdPositions ?? [] as position }
+                            <Select.Item value={JSON.stringify(position)}>{position.position_name}</Select.Item>
+                        {/each}
+                    </Select.Group>
+
+                </Select.Content>
+
+                <Select.Input name="position" />
+
+            </Select.Root>
+            {#each inputErrors?.position ?? [] as err }
+                <p class="text-red-700 font-bold text-xs px-2">{err}</p>
+            {/each}
             
-                <Drawer.Footer class="">
-                    <Button type="submit">
-                        <MikeLoader name="Create Candidate" loader={createCandidateLoader} loader_name="Creating.." />
-                    </Button>
+            <Label for="candidateName">Candidate Name:</Label>
+            <Input name="candidateName" type="text" id="candidateName" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate name"/>
+            {#each inputErrors?.candidateName ?? [] as err }
+                <p class="text-red-700 font-bold text-xs px-2">{err}</p>
+            {/each}
+            
+            <Label for="organization">Organization:</Label>
+            <Input name="organization" type="text" id="organization" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate organization"/>
+            {#each inputErrors?.organization ?? [] as err }
+                <p class="text-red-700 font-bold text-xs px-2">{err}</p>
+            {/each}
 
-                    <Drawer.Close asChild let:builder>
-                        <Button variant="outline" builders={[builder]} class="border-slate-400 dark:border-slate-700">Cancel</Button>
-                    </Drawer.Close>
-                </Drawer.Footer>
-            </form>
+            <Label for="agenda">Agenda:</Label>
+            <Input name="agenda" type="text" id="agenda" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate agenda"/>
+            {#each inputErrors?.agenda ?? [] as err }
+                <p class="text-red-700 font-bold text-xs px-2">{err}</p>
+            {/each}
 
-        </Drawer.Content>
-    </Drawer.Root>
-</div>
+            <Button type="submit">
+                <MikeLoader name="Create Candidate" loader={createCandidateLoader} loader_name="Creating.." />
+            </Button>
+        </form>
+
+    </Dialog.Content>
+
+</Dialog.Root>
+

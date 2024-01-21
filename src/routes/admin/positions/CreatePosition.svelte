@@ -69,85 +69,39 @@
 </script>
 
 
-<div class="hidden md:block">
-    <Dialog.Root bind:open={showDesktopDialog}>
 
-        <Dialog.Trigger asChild let:builder>
-            <Button builders={[builder]}>Create Position</Button>
-        </Dialog.Trigger>
-        
-        <Dialog.Content class="sm:max-w-[425px] shadow-sm shadow-black dark:shadow-white">
-        
-            <Dialog.Header>
-                <Dialog.Title>Create Position</Dialog.Title>
-                <Dialog.Description>This will establish a position that voters can rely on.</Dialog.Description>
-            </Dialog.Header>
+<Dialog.Root bind:open={showDesktopDialog}>
 
-            <form method="POST" action="?/createPosition" enctype="multipart/form-data" use:enhance={createPositionNews} class="flex flex-col gap-4">
-                <Label for="position">Position:</Label>
-                <Input name="position" type="text" id="position" class="border-slate-400 dark:border-slate-700" placeholder="Position name ex, Precedent"/>
-                {#each inputErrors?.position ?? [] as err }
-                    <p class="text-red-700 font-bold text-xs px-2">{err}</p>
-                {/each}
+    <Dialog.Trigger asChild let:builder>
+        <Button builders={[builder]}>Create Position</Button>
+    </Dialog.Trigger>
+    
+    <Dialog.Content class="sm:max-w-[425px] shadow-sm shadow-black dark:shadow-white">
+    
+        <Dialog.Header>
+            <Dialog.Title>Create Position</Dialog.Title>
+            <Dialog.Description>This will establish a position that voters can rely on.</Dialog.Description>
+        </Dialog.Header>
 
-                <Label for="voteLimit">Vote Limit:</Label>
-                <Input name="voteLimit" type="number" id="voteLimit" class="border-slate-400 dark:border-slate-700" placeholder="Only accepts number"/>
-                {#each inputErrors?.voteLimit ?? [] as err }
-                    <p class="text-red-700 font-bold text-xs px-2">{err}</p>
-                {/each}
+        <form method="POST" action="?/createPosition" enctype="multipart/form-data" use:enhance={createPositionNews} class="flex flex-col gap-4">
+            <Label for="position">Position:</Label>
+            <Input name="position" type="text" id="position" class="border-slate-400 dark:border-slate-700" placeholder="Position name ex, Precedent"/>
+            {#each inputErrors?.position ?? [] as err }
+                <p class="text-red-700 font-bold text-xs px-2">{err}</p>
+            {/each}
 
-                <Button type="submit">
-                    <MikeLoader name="Create Position" loader={createPositionLoader} loader_name="Creating.." />
-                </Button>
-            </form>
+            <Label for="voteLimit">Vote Limit:</Label>
+            <Input name="voteLimit" type="number" id="voteLimit" class="border-slate-400 dark:border-slate-700" placeholder="Only accepts number"/>
+            {#each inputErrors?.voteLimit ?? [] as err }
+                <p class="text-red-700 font-bold text-xs px-2">{err}</p>
+            {/each}
 
-        </Dialog.Content>
+            <Button type="submit">
+                <MikeLoader name="Create Position" loader={createPositionLoader} loader_name="Creating.." />
+            </Button>
+        </form>
 
-    </Dialog.Root>
-</div>
+    </Dialog.Content>
 
-<div class="md:hidden">
-    <Drawer.Root bind:open={showMobileDialog} >
+</Dialog.Root>
 
-        <Drawer.Trigger asChild let:builder>
-            <Button builders={[builder]}>Create Position</Button>
-        </Drawer.Trigger>
-
-        <Drawer.Content>
-
-            <Drawer.Header class="text-left">
-                <Drawer.Title>Create Position</Drawer.Title>
-                <Drawer.Description>This will establish a position that voters can rely on.</Drawer.Description>
-            </Drawer.Header>
-
-            <form method="POST" action="?/createPosition" enctype="multipart/form-data" use:enhance={createPositionNews} class="">
-                <div class="flex flex-col gap-4 p-4">
-                    <Label for="position">Position:</Label>
-                    <Input name="position" type="text" id="position" class="border-slate-400 dark:border-slate-700" placeholder="Position name ex, Precedent"/>
-                    {#each inputErrors?.position ?? [] as err }
-                        <p class="text-red-700 font-bold text-xs px-2">{err}</p>
-                    {/each}
-
-                    <Label for="voteLimit">Vote Limit:</Label>
-                    <Input name="voteLimit" type="number" id="voteLimit" class="border-slate-400 dark:border-slate-700" placeholder="Only accepts number"/>
-                    {#each inputErrors?.voteLimit ?? [] as err }
-                        <p class="text-red-700 font-bold text-xs px-2">{err}</p>
-                    {/each}
-
-                </div>
-            
-            
-                <Drawer.Footer class="">
-                    <Button type="submit">
-                        <MikeLoader name="Create Position" loader={createPositionLoader} loader_name="Creating.." />
-                    </Button>
-
-                    <Drawer.Close asChild let:builder>
-                        <Button variant="outline" builders={[builder]} class="border-slate-400 dark:border-slate-700">Cancel</Button>
-                    </Drawer.Close>
-                </Drawer.Footer>
-            </form>
-
-        </Drawer.Content>
-    </Drawer.Root>
-</div>
