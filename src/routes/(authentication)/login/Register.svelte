@@ -96,7 +96,6 @@
                     <Select.Content class="border-slate-400 dark:border-slate-700 mt-2">
     
                         <Select.Group>
-                            <Select.Label>Role</Select.Label>
                             <Select.Item value="Voter">Voter</Select.Item>
                             <Select.Item value="Admin">Admin</Select.Item>
                         </Select.Group>

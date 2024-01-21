@@ -15,13 +15,14 @@
     let {session, createdPosition} = data;
 
     onMount( () => {
+        $navState.activeItem = "/admin/positions";
         if(session) $navState.session = session, $positionState.createdPositions = createdPosition;
     });
 
 
 </script>
 
-<div class="mx-auto">
+<div class="mx-auto sm:max-w-[90%]">
     <div class="flex flex-col gap-2 justify-between"> 
         <h3 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Positions</h3>
 
@@ -32,10 +33,10 @@
 
     </div>
 </div>
-<Separator class="my-4" />
+<Separator class="my-4 mx-auto sm:max-w-[90%]" />
 
 <!--Pc View-->
-<div class="mx-auto max-h-[70dvh] overflow-auto hidden md:block">
+<div class="mx-auto max-h-[70dvh] sm:max-w-[90%] overflow-auto hidden md:block">
     <Table.Root class="">
         <Table.Header class="truncate">
             <Table.Row>

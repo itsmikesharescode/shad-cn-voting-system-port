@@ -15,73 +15,80 @@
     let {session, createdPosition, createdCandidates} = data;
 
     onMount( () => {
+        $navState.activeItem = "/admin/candidates";
         if(session) $navState.session = session, $positionState.createdPositions = createdPosition, $candidateState.createdCandidates = createdCandidates;
     });
 
 
 </script>
 
-<div class="mx-auto">
-    <div class="flex flex-col gap-2 justify-between"> 
-        <h3 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Candidates</h3>
 
-        <div class="flex gap-2 items-center">
-            <CreateCandidates />
-            <Button class="">Search</Button>
+{#if $positionState.createdPositions?.length}
+
+    <div class="mx-auto sm:max-w-[90%]">
+        <div class="flex flex-col gap-2 justify-between"> 
+            <h3 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Candidates</h3>
+
+            <div class="flex gap-2 items-center">
+                <CreateCandidates />
+                <Button class="">Search</Button>
+            </div>
+
         </div>
-
     </div>
-</div>
-<Separator class="my-4" />
+    <Separator class="my-4 sm:max-w-[90%] mx-auto" />
 
-<!--Pc View-->
-<div class="mx-auto max-h-[70dvh] overflow-auto hidden md:block">
-    <Table.Root class="">
-        <Table.Header class="truncate">
-            <Table.Row>
-                <Table.Head class="w-full">Candidate Name</Table.Head>
-                <Table.Head>Date Created</Table.Head>
-                <Table.Head >Position</Table.Head>
-                <Table.Head class="">Options</Table.Head>
-            </Table.Row>
-        </Table.Header>
-    
-        <Table.Body>
-            {#each $candidateState.createdCandidates ?? [] as candidate, index}
+    <!--Pc View-->
+    <div class="mx-auto max-h-[70dvh] sm:max-w-[90%] overflow-auto hidden md:block">
+        <Table.Root class="">
+            <Table.Header class="truncate">
                 <Table.Row>
-                    <Table.Cell class="font-medium">{candidate.candidate_name}</Table.Cell> 
-                    <Table.Cell class="truncate">{dateConvert(candidate.created_at)}</Table.Cell>
-                    <Table.Cell class="truncate">{candidate.position_name}</Table.Cell>
-                    <Table.Cell class="flex gap-2 items-center">
-                        
-                        <DeleteCandidate {candidate} />
-                       
-                    </Table.Cell>
+                    <Table.Head class="w-full">Candidate Name</Table.Head>
+                    <Table.Head>Date Created</Table.Head>
+                    <Table.Head >Position</Table.Head>
+                    <Table.Head class="">Options</Table.Head>
                 </Table.Row>
-            {/each}
-        </Table.Body>
-    
-    </Table.Root>
-</div>
+            </Table.Header>
+        
+            <Table.Body>
+                {#each $candidateState.createdCandidates ?? [] as candidate, index}
+                    <Table.Row>
+                        <Table.Cell class="font-medium">{candidate.candidate_name}</Table.Cell> 
+                        <Table.Cell class="truncate">{dateConvert(candidate.created_at)}</Table.Cell>
+                        <Table.Cell class="truncate">{candidate.position_name}</Table.Cell>
+                        <Table.Cell class="flex gap-2 items-center">
+                            
+                            <DeleteCandidate {candidate} />
+                        
+                        </Table.Cell>
+                    </Table.Row>
+                {/each}
+            </Table.Body>
+        
+        </Table.Root>
+    </div>
 
-<!--Mobile View-->
-<div class=" max-h-[70dvh] overflow-auto md:hidden flex flex-wrap gap-4 justify-center">
-    {#each $candidateState.createdCandidates ?? [] as candidate, index}
-        <Card.Root class="w-full sm:max-w-[45%] shadow-sm shadow-black dark:shadow-white">
-            
-            <Card.Header class="">
-                <Card.Title class="text-2xl">{candidate.candidate_name}</Card.Title>
-                <Card.Description class="text-xs font-bold">Date Created: {dateConvert(candidate.created_at)}</Card.Description>
-                <Card.Description class="text-xs font-bold">Position: {candidate.position_name}</Card.Description>
-            </Card.Header>
-
-
-            <Card.Footer class="flex justify-end gap-2 items-center">
+    <!--Mobile View-->
+    <div class=" max-h-[70dvh] overflow-auto md:hidden flex flex-wrap gap-4 justify-center">
+        {#each $candidateState.createdCandidates ?? [] as candidate, index}
+            <Card.Root class="w-full sm:max-w-[45%] shadow-sm shadow-black dark:shadow-white">
                 
-                <DeleteCandidate {candidate}  />
+                <Card.Header class="">
+                    <Card.Title class="text-2xl">{candidate.candidate_name}</Card.Title>
+                    <Card.Description class="text-xs font-bold">Date Created: {dateConvert(candidate.created_at)}</Card.Description>
+                    <Card.Description class="text-xs font-bold">Position: {candidate.position_name}</Card.Description>
+                </Card.Header>
 
-            </Card.Footer>
 
-        </Card.Root>
-    {/each}
-</div>
+                <Card.Footer class="flex justify-end gap-2 items-center">
+                    
+                    <DeleteCandidate {candidate}  />
+
+                </Card.Footer>
+
+            </Card.Root>
+        {/each}
+    </div>
+{:else}
+    <p class="text-center">There is no position detected you must make one first in-order to create candidate.</p>  
+{/if}

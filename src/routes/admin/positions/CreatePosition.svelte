@@ -48,14 +48,6 @@
                     break;
                 
                 case 402:
-                    
-                    if(msg === `duplicate key value violates unique constraint "created_position_position_name_key"`){
-                        toast.error("Failed to create position", {description: "Position name already exist try another one."});
-                        createPositionLoader = false;
-                        inputErrors = null;
-                        break;
-                    }
-
                     toast.error("Failed to create position!", {description: msg});
                     createPositionLoader = false;
                     inputErrors = null;

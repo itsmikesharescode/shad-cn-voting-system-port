@@ -3,6 +3,7 @@ import type { ZodError } from "zod";
 import type { PageServerLoad } from "./$types";
 import { createCandidateSchema, deleteCandidateSchema } from "$lib/helpers/schemas/createCandidate";
 import type { CreatedCandidateTB, CreatedPositionTB } from "$lib/types";
+import type { PostgrestError } from "@supabase/supabase-js";
 
 const queryCreatedPosition = "id, created_at, position_name, vote_limit, share_code";
 const queryCreatedCandidate = "id, created_at, position_name, share_code, candidate_name, candidate_organization, candidate_agenda";
@@ -38,25 +39,32 @@ export const actions: Actions = {
             const session = await getSession();
 
             if(session){
-                const {error: insertCandidateError} = await supabase.from("created_candidate").insert([{
 
-                    candidate_name: result.candidateName,
-                    candidate_organization: result.organization,
-                    candidate_agenda: result.agenda,
-                    position_name: positionRef.position_name,
-                    user_id: session.user.id,
-                    share_code: session.user.user_metadata.share_code,
+                const {data, error} = await supabase.rpc("check_if_candidate_exist", {input_value: result.candidateName}) as {data: boolean, error: PostgrestError | null};
 
-                }]).match({share_code: positionRef.share_code, user_id: session.user.id});
-
-                if(insertCandidateError) return fail(402, {msg: insertCandidateError.message});
+                if(data) return fail(402, {msg: "Candidate already exist."});
                 else {
-                    const {data: createdCandidates, error: createdCandidatesError} = await supabase.from("created_candidate").select(queryCreatedCandidate)
-                    .match({share_code: session.user.user_metadata.share_code, user_id: session.user.id});
+                    const {error: insertCandidateError} = await supabase.from("created_candidate").insert([{
+                        position_id: positionRef.id,
+                        candidate_name: result.candidateName,
+                        candidate_organization: result.organization,
+                        candidate_agenda: result.agenda,
+                        position_name: positionRef.position_name,
+                        user_id: session.user.id,
+                        share_code: session.user.user_metadata.share_code,
 
-                    if(createdCandidatesError) return fail(402, {msg: createdCandidatesError.message});
-                    else if(createdCandidates) return fail(200, {msg: "Successfully created a candidate", session, createdCandidates});
-                }
+                    }]).match({share_code: positionRef.share_code, user_id: session.user.id});
+
+                    if(insertCandidateError) return fail(402, {msg: insertCandidateError.message});
+                    else {
+                        const {data: createdCandidates, error: createdCandidatesError} = await supabase.from("created_candidate").select(queryCreatedCandidate)
+                        .match({share_code: session.user.user_metadata.share_code, user_id: session.user.id});
+
+                        if(createdCandidatesError) return fail(402, {msg: createdCandidatesError.message});
+                        else if(createdCandidates) return fail(200, {msg: "Successfully created a candidate", session, createdCandidates});
+                    };
+                };
+                
 
             }else throw redirect(302, "/login?no-session");
 
@@ -84,7 +92,8 @@ export const actions: Actions = {
 
                 if(deleteCandidateError) return fail(402, {msg: deleteCandidateError.message});
                 else {
-                    const {data: createdCandidates, error: createdCandidatesError} = await supabase.from("created_candidate").select(queryCreatedCandidate);
+                    const {data: createdCandidates, error: createdCandidatesError} = await supabase.from("created_candidate").select(queryCreatedCandidate)
+                    .match({share_code: session.user.user_metadata.share_code, user_id: session.user.id});
                     if(createdCandidatesError) return fail(402, {msg: createdCandidatesError.message});
                     else if(createdCandidates) return fail(200, {msg: "Successfully deleted a candidate", session, createdCandidates}); 
                 }

@@ -90,7 +90,10 @@
                     {#each navigation.items as item }
                         <a href={item.url} 
                         class="p-2 hover:bg-slate-700 hover:text-white {$navState.activeItem === item.url ? "bg-[#000000b7] text-white dark:bg-[#ffffff4b]" : ""}"
-                        on:click={() => $navState.activeItem = item.url}
+                        on:click={() => {
+                            $navState.activeItem = item.url;
+                            showMobileMenu = false;
+                        }}
                         >{item.title}</a>
                     {/each}
 

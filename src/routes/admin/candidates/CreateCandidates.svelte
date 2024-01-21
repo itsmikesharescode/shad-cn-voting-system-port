@@ -50,14 +50,6 @@
                     break;
                 
                 case 402:
-                    
-                    if(msg ===`duplicate key value violates unique constraint "created_candidate_candidate_name_key"`){
-                        toast.error("Failed to create candidate", {description: "Candidate name already exist try another one."});
-                        inputErrors = null;
-                        createCandidateLoader = false;
-                        break;
-                    }
-
                     toast.error("Failed to create candidate!", {description: msg});
                     inputErrors = null;
                     createCandidateLoader = false;
@@ -115,15 +107,27 @@
                     <Select.Input name="position" />
     
                 </Select.Root>
+                {#each inputErrors?.position ?? [] as err }
+                    <p class="text-red-700 font-bold text-xs px-2">{err}</p>
+                {/each}
                
                 <Label for="candidateName">Candidate Name:</Label>
                 <Input name="candidateName" type="text" id="candidateName" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate name"/>
+                {#each inputErrors?.candidateName ?? [] as err }
+                    <p class="text-red-700 font-bold text-xs px-2">{err}</p>
+                {/each}
                 
                 <Label for="organization">Organization:</Label>
                 <Input name="organization" type="text" id="organization" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate organization"/>
+                {#each inputErrors?.organization ?? [] as err }
+                    <p class="text-red-700 font-bold text-xs px-2">{err}</p>
+                {/each}
 
                 <Label for="agenda">Agenda:</Label>
                 <Input name="agenda" type="text" id="agenda" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate agenda"/>
+                {#each inputErrors?.agenda ?? [] as err }
+                    <p class="text-red-700 font-bold text-xs px-2">{err}</p>
+                {/each}
 
                 <Button type="submit">
                     <MikeLoader name="Create Candidate" loader={createCandidateLoader} loader_name="Creating.." />
@@ -145,8 +149,8 @@
         <Drawer.Content>
 
             <Drawer.Header class="text-left">
-                <Drawer.Title>Create Position</Drawer.Title>
-                <Drawer.Description>This will establish a position that voters can rely on.</Drawer.Description>
+                <Drawer.Title>Create Candidate</Drawer.Title>
+                <Drawer.Description>This will establish a candidate that voters can vote on.</Drawer.Description>
             </Drawer.Header>
 
             <form method="POST" action="?/createCandidate" enctype="multipart/form-data" use:enhance={createCandidateNews} class="">
@@ -172,15 +176,29 @@
                         <Select.Input name="position" />
         
                     </Select.Root>
+                    {#each inputErrors?.position ?? [] as err }
+                        <p class="text-red-700 font-bold text-xs px-2">{err}</p>
+                    {/each}
                 
                     <Label for="candidateName">Candidate Name:</Label>
                     <Input name="candidateName" type="text" id="candidateName" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate name"/>
-                    
+                    {#each inputErrors?.candidateName ?? [] as err }
+                        <p class="text-red-700 font-bold text-xs px-2">{err}</p>
+                    {/each}
+
+
                     <Label for="organization">Organization:</Label>
                     <Input name="organization" type="text" id="organization" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate organization"/>
+                    {#each inputErrors?.organization ?? [] as err }
+                        <p class="text-red-700 font-bold text-xs px-2">{err}</p>
+                    {/each}
+
 
                     <Label for="agenda">Agenda:</Label>
                     <Input name="agenda" type="text" id="agenda" class="border-slate-400 dark:border-slate-700" placeholder="Enter candidate agenda"/>
+                    {#each inputErrors?.agenda ?? [] as err }
+                        <p class="text-red-700 font-bold text-xs px-2">{err}</p>
+                    {/each}
                 </div>
             
             
