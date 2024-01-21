@@ -12,14 +12,8 @@
 
     export let data: PageServerData;
 
-    let {session, createdPosition, createdCandidates} = data;
-
-    onMount( () => {
-        $navState.activeItem = "/admin/voters";
-        if(session) $navState.session = session, $positionState.createdPositions = createdPosition, $candidateState.createdCandidates = createdCandidates;
-    });
-
-
+    
+        
 </script>
 
 <div class="mx-auto sm:max-w-[90%]">

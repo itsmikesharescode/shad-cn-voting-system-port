@@ -14,5 +14,5 @@
 	class={cn("fixed inset-0 z-50 bg-black/80", className)}
 	{...$$restProps}
 >
-	
+	<slot />
 </DrawerPrimitive.Overlay>
