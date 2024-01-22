@@ -62,7 +62,11 @@ export const navState = writable({
             ]
         },
 
-    ]
+    ],
+
+    voterNav: [
+
+    ],
 });
 
 //create position admin state management
@@ -80,4 +84,8 @@ export const voterState = writable({
     createdVoters:<CreatedVotersTB[] | null> null,
 })
 
+// voter state management
+export const realVoterState = writable({
+    createdCandidates:<CreatedCandidateTB[] | null> null,
+})
 

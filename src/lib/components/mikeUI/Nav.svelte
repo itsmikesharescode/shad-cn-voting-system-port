@@ -42,18 +42,21 @@
         };
     };
 
+    $: hasVoter = $navState.session?.user.user_metadata.role as "Voter" | "Admin";
+
 </script>
 
 <div class="fixed backdrop-blur-lg p-2 border-b-2 w-full flex items-center justify-between border-black dark:border-slate-400">
-    <Button variant="ghost" class="flex flex-col gap-1 items-start md:hidden w-full" on:click={() => showMobileMenu = true}> 
+    <Button variant="ghost" class="flex flex-col gap-1 items-start md:hidden {hasVoter === "Voter" ? "hidden" : ""}" on:click={() => showMobileMenu = true}> 
         <div class="w-4 border-b-2 dark:border-white border-black"></div>
         <div class="w-6 border-b-2 dark:border-white border-black"></div>
         <div class="w-4 border-b-2 dark:border-white border-black"></div>
     </Button>
 
     <div class="flex md:w-full md:justify-between">
+
         <div class="hidden md:flex gap-2 truncate">
-            {#each $navState.adminNav as navigation }
+            {#each $navState.defaultNav as navigation }
                 {#each navigation.items as item }
                     <a href={item.url} 
                     class="p-2 hover:bg-slate-700 transition-all rounded-lg hover:text-white {$navState.activeItem === item.url ? "bg-[#000000b7] text-white dark:bg-[#ffffff4b]" : ""}"
@@ -67,15 +70,15 @@
         </div>
     
     
-        <div class="flex items-center gap-3 truncate">
+        <div class="flex items-center gap-3 truncate ">
     
-            <div class="items-center gap-2 hidden sm:flex">
+            <div class="items-center gap-2 flex {hasVoter === "Admin" ? "hidden sm:flex" : ""} ">
                 <p>Hello,</p>
                 {$navState.session?.user?.email}
             </div>
     
             <form method="POST" action="/login?/signOut" use:enhance={signOutNews}>
-                <Button type="submit">
+                <Button type="submit" variant="destructive">
                     <MikeLoader name="Log out" loader={signOutLoader} loader_name="Logging out.."  />
                 </Button>
             </form>
@@ -91,10 +94,11 @@
             </Button>
         </div>
     </div>
+
 </div>
 
 {#if showMobileMenu}
-    <div class="fixed left-0 top-0 right-0 bottom-0 bg-[#00000075] md:hidden">
+    <div class="fixed left-0 top-0 right-0 bottom-0 bg-[#00000075] md:hidden {hasVoter === "Voter" ? "hidden" : ""}">
         <div class="fixed left-0 top-0 w-[70%] sm:w-[40%] md:w-[30%] lg:w-[20%]  bottom-0 bg-white dark:bg-black" in:fly={{x:-200, duration: 350}} out:fly={{x:-200, duration:100}}>
             <div class="flex justify-end mb-10 p-2">
                 <Button variant="ghost" class="flex flex-col gap-1 items-end" on:click={() => showMobileMenu = false}> 
@@ -104,7 +108,7 @@
                 </Button>
         </div>
 
-            {#each $navState.adminNav as navigation }
+            {#each $navState.defaultNav as navigation }
 
                 <div class="font-bold border-b-2 p-2">{navigation.category}</div>
 

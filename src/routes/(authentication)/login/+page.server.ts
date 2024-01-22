@@ -56,7 +56,7 @@ export const actions: Actions = {
                         data: {
                             username: result.username,
                             role: result.role,
-                            share_code,
+                            share_code: `${result.role === "Admin" ? share_code : null}`, 
                         }
                     }
                 });
@@ -84,6 +84,7 @@ export const actions: Actions = {
                             user_email: session.user.email,
                             role_name: session.user.user_metadata.role,
                             username: session.user.user_metadata.username,
+                            share_code: null,
                         }]);
 
                         if(insertVoterError) return fail(402, {msg: insertVoterError.message});

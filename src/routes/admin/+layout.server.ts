@@ -13,7 +13,7 @@ export const load: LayoutServerLoad = async ({locals: {supabase, getSession, sup
 
     }else if(data === "Voter"){
 
-        throw redirect(302, "/vote");
+        throw redirect(302, "/voter");
 
     }else if(data === "Admin"){
 
