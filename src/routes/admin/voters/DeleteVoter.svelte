@@ -1,61 +1,53 @@
 <script lang="ts">
-    import * as Dialog from "$lib/components/ui/dialog";
+	
     import * as Drawer from "$lib/components/ui/drawer";
-    import { Input } from "$lib/components/ui/input";
-    import { Label } from "$lib/components/ui/label";
     import { Button } from "$lib/components/ui/button";
     import * as AlertDialog from "$lib/components/ui/alert-dialog";
 	import type { SubmitFunction } from "@sveltejs/kit";
 	import { enhance } from "$app/forms";
-	import type { Session } from "@supabase/supabase-js";
-	import type { CreatedCandidateTB, ServerNews } from "$lib/types";
+    import MikeLoader from "$lib/components/mikeUI/MikeLoader.svelte";
+	import type { CreatedVotersTB, ServerNews } from "$lib/types";
+	import { basicEncrypt } from "$lib/helpers/encryption";
 	import { toast } from "svelte-sonner";
-	import { navState, candidateState } from "$lib";
-	import MikeLoader from "$lib/components/mikeUI/MikeLoader.svelte";
+    import {voterState} from "$lib";
 
-    export let candidate: CreatedCandidateTB;
+    export let voter: CreatedVotersTB;
 
-    type DeleteCandidateNews = {
-        session: Session
+    type DeleteVoterNews = {
         msg: string
-        createdCandidates: CreatedCandidateTB[]
+        createdVoters: CreatedVotersTB[]
     }
-    
-    let deleteCandidateLoader = false;
+
+    let deleteVoterLoader = false;
     let desktopDialog = false;
     let mobileDialog = false;
 
-    const deleteCandidateNews: SubmitFunction = () => 
+    $: voterRef = basicEncrypt(JSON.stringify(voter));
+
+    const deleteVoterNews: SubmitFunction = () => 
     {
-        deleteCandidateLoader = true;
+        deleteVoterLoader = true;
         return async ({ result, update }) => 
         {
-            const {status, data: {session, msg, createdCandidates} } = result as ServerNews<DeleteCandidateNews>
+            const {status, data: {msg, createdVoters} } = result as ServerNews<DeleteVoterNews>
                 
             switch (status) {
                 case 200:
+                    $voterState.createdVoters = createdVoters;
                     toast.success("Success!", {description: msg});
-                    $navState.session = session;
-                    $candidateState.createdCandidates = createdCandidates;
-                    deleteCandidateLoader = false;
-                    desktopDialog = false;
-                    mobileDialog = false;
+                    deleteVoterLoader = false;
                     break;
                 
                 case 402:
-                    toast.error("Failed to delete candidate!", {description: msg});
-                    deleteCandidateLoader = false;
+                    toast.error("Failed to delete voter!", {description: msg});
+                    deleteVoterLoader = false;
                     break;
-
-                default:
-                    break;
+                
             };
             await update();
         };
     };
-
-    const candidateRef = candidate;
-
+    
 </script>
 
 
@@ -69,7 +61,7 @@
             <AlertDialog.Header>
                 <AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
                 <AlertDialog.Description>
-                    This action cannot be undone. This will permanently delete the candidate
+                    This action cannot be undone. This will permanently delete the position
                     and remove all its data from our database.
                 </AlertDialog.Description>
             </AlertDialog.Header>
@@ -77,10 +69,10 @@
             <AlertDialog.Footer class="flex items-center">
                 <AlertDialog.Cancel class="py-4">Cancel</AlertDialog.Cancel>
 
-                <form method="POST" action="?/deleteCandidate" enctype="multipart/form-data" use:enhance={deleteCandidateNews}>
-                    <input name="candidateRef" type="hidden" class="hidden" value={JSON.stringify(candidateRef)} />
+                <form method="POST" action="?/deleteVoter" enctype="multipart/form-data" use:enhance={deleteVoterNews}>
+                    <input name="voterRef" type="hidden" class="hidden" value={voterRef} />
                     <Button type="submit" variant="destructive" >
-                        <MikeLoader name="Continue" loader={deleteCandidateLoader} loader_name="Deleting.."/>
+                        <MikeLoader name="Continue" loader={deleteVoterLoader} loader_name="Deleting.."/>
                     </Button>
                 </form>
 
@@ -101,16 +93,16 @@
 
             <Drawer.Header class="text-left">
                 <Drawer.Title>Are you absolutely sure?</Drawer.Title>
-                <Drawer.Description>This action cannot be undone. This will permanently delete the candidate
+                <Drawer.Description>This action cannot be undone. This will permanently delete the position
                     and remove all its data from our database.</Drawer.Description>
             </Drawer.Header>
 
           
             <Drawer.Footer class="flex gap-2">
-                <form method="POST" action="?/deleteCandidate" enctype="multipart/form-data" use:enhance={deleteCandidateNews} >
-                    <input name="candidateRef" type="hidden" class="hidden" value={JSON.stringify(candidateRef)} />
+                <form method="POST" action="?/deletePosition" enctype="multipart/form-data" use:enhance={deleteVoterNews} >
+                    <input name="voterRef" type="hidden" class="hidden" value={voterRef} />
                     <Button type="submit" variant="destructive" class="w-full">
-                        <MikeLoader name="Continue" loader={deleteCandidateLoader} loader_name="Deleting.." />
+                        <MikeLoader name="Continue" loader={deleteVoterLoader} loader_name="Deleting.." />
                     </Button>  
                 </form>
 

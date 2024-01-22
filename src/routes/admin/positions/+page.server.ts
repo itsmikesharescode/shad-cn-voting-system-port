@@ -1,24 +1,9 @@
 import { fail, redirect, type Actions } from "@sveltejs/kit";
 import { createPositionSchema, deletePositionSchema } from "$lib/helpers/schemas/createPosition";
 import type { ZodError } from "zod";
-import type { PageServerLoad } from "./$types";
 import type { PostgrestError } from "@supabase/supabase-js";
 
 const queryCreatedPosition = "id, created_at, position_name, vote_limit, share_code";
-
-export const load: PageServerLoad = async ({locals: {supabase, getSession}}) => {
-
-    const session = await getSession();
-
-    if(session){
-        const {data: createdPosition, error: createdPositionError} = await supabase.from("created_position").select(queryCreatedPosition).eq("user_id", session.user.id);
-        
-        if(createdPositionError) console.log(createdPositionError.message);
-        return {createdPosition, session};
-
-    }else throw redirect(302, "/login?no-session");
-
-};
 
 export const actions: Actions = {
 

@@ -44,8 +44,8 @@
                 
             switch (status) {
                 case 200:
-                    $navState.session = session;
                     toast.success("Welcome!", {description: msg});
+                    $navState.session = session;
                     registerLoader = false;
                     if(whoareyou === "Admin") goto("/admin/dashboard");
                     else if(whoareyou === "Voter") goto("/voter");

@@ -52,6 +52,12 @@
     </Button>
 
     <div class="flex items-center gap-3">
+
+        <div class="items-center gap-2 hidden sm:flex">
+            <p>Hello,</p>
+            {$navState.session?.user?.email}
+        </div>
+
         <form method="POST" action="/login?/signOut" use:enhance={signOutNews}>
             <Button type="submit">
                 <MikeLoader name="Log out" loader={signOutLoader} loader_name="Logging out.."  />
@@ -65,7 +71,7 @@
             <Moon
                 class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
             />
-        <span class="sr-only">Toggle theme</span>
+            <span class="sr-only">Toggle theme</span>
         </Button>
     </div>
 </div>

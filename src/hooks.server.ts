@@ -1,6 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
-import type { Session } from '@supabase/supabase-js';
-import type { Handle } from '@sveltejs/kit';
+import type { PostgrestError } from '@supabase/supabase-js';
+import { redirect, type Handle } from '@sveltejs/kit';
 import type { CookieSerializeOptions } from 'cookie';
 
 const supabaseURL: string = import.meta.env.VITE_SUPABASE_URL;

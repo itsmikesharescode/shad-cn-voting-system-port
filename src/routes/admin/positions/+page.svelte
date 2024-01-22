@@ -10,15 +10,6 @@
 	import { dateConvert } from "$lib/helpers/convertDate";
 	import DeletePosition from "./DeletePosition.svelte";
 
-    export let data: PageServerData;
-
-    let {session, createdPosition} = data;
-
-    onMount( () => {
-        $navState.activeItem = "/admin/positions";
-        if(session) $navState.session = session, $positionState.createdPositions = createdPosition;
-    });
-
 
 </script>
 

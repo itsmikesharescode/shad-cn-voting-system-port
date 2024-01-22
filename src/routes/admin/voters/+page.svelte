@@ -6,14 +6,11 @@
 	import CreateVoter from "./CreateVoter.svelte";
 	import type { PageServerData } from "./$types";
 	import { onMount } from "svelte";
-	import { candidateState, navState, positionState } from "$lib";
+	import { candidateState, navState, positionState, voterState } from "$lib";
 	import { dateConvert } from "$lib/helpers/convertDate";
-	import DeleteCandidate from "./DeleteCandidate.svelte";
+	import DeleteVoter from "./DeleteVoter.svelte";
 
-    export let data: PageServerData;
 
-    
-        
 </script>
 
 <div class="mx-auto sm:max-w-[90%]">
@@ -34,22 +31,22 @@
     <Table.Root class="">
         <Table.Header class="truncate">
             <Table.Row>
-                <Table.Head class="w-full">Candidate Name</Table.Head>
+                <Table.Head class="w-full">Email</Table.Head>
+                <Table.Head class="w-full">Username</Table.Head>
                 <Table.Head>Date Created</Table.Head>
-                <Table.Head >Position</Table.Head>
                 <Table.Head class="">Options</Table.Head>
             </Table.Row>
         </Table.Header>
     
         <Table.Body>
-            {#each $candidateState.createdCandidates ?? [] as candidate, index}
+            {#each $voterState.createdVoters ?? [] as voter, index}
                 <Table.Row>
-                    <Table.Cell class="font-medium">{candidate.candidate_name}</Table.Cell> 
-                    <Table.Cell class="truncate">{dateConvert(candidate.created_at)}</Table.Cell>
-                    <Table.Cell class="truncate">{candidate.position_name}</Table.Cell>
+                    <Table.Cell class="font-medium">{voter.user_email}</Table.Cell> 
+                    <Table.Cell class="truncate">{voter.username}</Table.Cell>
+                    <Table.Cell class="truncate">{dateConvert(voter.created_at)}</Table.Cell>
                     <Table.Cell class="flex gap-2 items-center">
                         
-                        <DeleteCandidate {candidate} />
+                        <DeleteVoter {voter} />
                        
                     </Table.Cell>
                 </Table.Row>
@@ -61,19 +58,19 @@
 
 <!--Mobile View-->
 <div class=" max-h-[70dvh] overflow-auto md:hidden flex flex-wrap gap-4 justify-center">
-    {#each $candidateState.createdCandidates ?? [] as candidate, index}
+    {#each $voterState.createdVoters ?? [] as voter, index}
         <Card.Root class="w-full sm:max-w-[45%] shadow-sm shadow-black dark:shadow-white">
             
             <Card.Header class="">
-                <Card.Title class="text-2xl">{candidate.candidate_name}</Card.Title>
-                <Card.Description class="text-xs font-bold">Date Created: {dateConvert(candidate.created_at)}</Card.Description>
-                <Card.Description class="text-xs font-bold">Position: {candidate.position_name}</Card.Description>
+                <Card.Title class="text-2xl">{voter.user_email}</Card.Title>
+                <Card.Description class="text-xs font-bold">Date Created: {voter.username}</Card.Description>
+                <Card.Description class="text-xs font-bold">Position: {dateConvert(voter.created_at)}</Card.Description>
             </Card.Header>
 
 
             <Card.Footer class="flex justify-end gap-2 items-center">
                 
-                <DeleteCandidate {candidate}  />
+               <DeleteVoter {voter} />
 
             </Card.Footer>
 

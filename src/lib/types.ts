@@ -23,3 +23,12 @@ export type CreatedCandidateTB = {
     candidate_agenda: string
     share_code: string
 }
+
+export type CreatedVotersTB = {
+    id: number
+    created_at: string
+    user_id: string
+    user_email: string
+    username: string
+    share_code: string
+}

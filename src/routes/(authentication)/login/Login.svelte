@@ -12,10 +12,9 @@
 	import type { SubmitFunction } from "@sveltejs/kit";
 	import type { Session } from "@supabase/supabase-js";
 	import type { ServerNews } from "$lib/types";
-	import { navState } from "$lib";
 	import MikeLoader from "$lib/components/mikeUI/MikeLoader.svelte";
+	import { navState } from "$lib";
     
-
     type LoginValidation = {
         email: string[]
         password: string[]
@@ -26,10 +25,10 @@
         msg: string
         errors: LoginValidation
     };
-
+    
     let inputErrors: LoginValidation | null = null;
     let loginLoader = false;
-
+  
     const loginNews: SubmitFunction = () => 
     {
         loginLoader = true;
@@ -40,11 +39,10 @@
             switch (status) {
                 case 200:
                     const {user: {user_metadata: {role}}} = session;
-                    console.log(role)
                     $navState.session = session;
                     toast.success("Welcome Back!", {description: msg});
                     loginLoader = false;
-                    if(role === "Admin") goto("/admin/dashboard");
+                    if(role === "Admin") goto("/admin/dashboard")
                     else if(role === "Voter") goto("/voter");
 
                     break;

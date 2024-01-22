@@ -1,6 +1,17 @@
 <script lang="ts">
     import * as Menubar from "$lib/components/ui/menubar";
     import Nav from "$lib/components/mikeUI/Nav.svelte";
+	import type { LayoutServerData } from "./$types";
+	import { onMount } from "svelte";
+	import { candidateState, positionState, voterState } from "$lib";
+	
+    export let data: LayoutServerData;
+
+    onMount( () => {
+        $positionState.createdPositions = data.positions.data;
+        $candidateState.createdCandidates = data.candidates.data;
+        $voterState.createdVoters = data.createdVoters.data;
+    })
 
 </script>
 
