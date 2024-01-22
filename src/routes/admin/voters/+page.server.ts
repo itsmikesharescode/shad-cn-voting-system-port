@@ -7,7 +7,7 @@ import { basicDecrypt } from "$lib/helpers/encryption";
 
 export const actions: Actions = {
 
-    createVoter: async ({request, locals: {supabaseAdmin, getSession}}) =>
+    createVoter: async ({request, locals: {supabaseAdmin}}) =>
     {
         
         const formData = Object.fromEntries(await request.formData());

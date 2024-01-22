@@ -10,7 +10,10 @@
 	import { dateConvert } from "$lib/helpers/convertDate";
 	import DeleteCandidate from "./DeleteCandidate.svelte";
 
-
+    onMount( () => {
+        $navState.activeItem = "/admin/candidates";
+    
+    })
  
 </script>
 

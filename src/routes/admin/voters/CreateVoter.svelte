@@ -12,7 +12,7 @@
 	import { candidateState, navState, positionState, voterState } from "$lib";
 	import MikeLoader from "$lib/components/mikeUI/MikeLoader.svelte";
     import * as Select from "$lib/components/ui/select";
-	import { basicDecrypt, basicEncrypt } from "$lib/helpers/encryption";
+	import { basicEncrypt } from "$lib/helpers/encryption";
 
     type CreatedVoterValidation = {
         shareCode: string[]
@@ -43,7 +43,6 @@
                 
             switch (status) {
                 case 200:
-                    $navState.session = session;
                     $voterState.createdVoters = createdVoters;
                     toast.success("Success!", {description: msg});
                     createVoterLoader = false;

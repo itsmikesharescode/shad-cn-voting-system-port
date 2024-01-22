@@ -4,12 +4,14 @@
     import { Separator } from "$lib/components/ui/separator";
     import * as Card from "$lib/components/ui/card";
 	import CreateVoter from "./CreateVoter.svelte";
-	import type { PageServerData } from "./$types";
 	import { onMount } from "svelte";
-	import { candidateState, navState, positionState, voterState } from "$lib";
+	import { navState, voterState } from "$lib";
 	import { dateConvert } from "$lib/helpers/convertDate";
 	import DeleteVoter from "./DeleteVoter.svelte";
 
+    onMount( () => {
+        $navState.activeItem = "/admin/voters";
+    })
 
 </script>
 

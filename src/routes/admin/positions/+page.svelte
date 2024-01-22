@@ -10,7 +10,9 @@
 	import { dateConvert } from "$lib/helpers/convertDate";
 	import DeletePosition from "./DeletePosition.svelte";
 
-
+    onMount( () => {
+        $navState.activeItem = "/admin/positions";
+    })
 </script>
 
 <div class="mx-auto sm:max-w-[90%]">
