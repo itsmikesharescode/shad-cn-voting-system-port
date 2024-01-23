@@ -2,12 +2,15 @@
 	import { enhance } from "$app/forms";
     import { Button } from "$lib/components/ui/button";
     import { Input } from "$lib/components/ui/input";
-	import type { CreatedCandidateTB, ServerNews } from "$lib/types";
+	import type { CreatedCandidateTB, ServerNews, SortedCandidates } from "$lib/types";
 	import type { SubmitFunction } from "@sveltejs/kit";
     import MikeLoader from "$lib/components/mikeUI/MikeLoader.svelte";
 	import { toast } from "svelte-sonner";
-	import { realVoterState } from "$lib";
+	import { navState, realVoterState } from "$lib";
 	import VotingChamber from "./VotingChamber.svelte";
+	import { invalidateAll } from "$app/navigation";
+	import { onMount } from "svelte";
+	import type { PageServerData } from "./$types";
 
     type JoinCodeValidation = {
         shareCode: string[]
@@ -15,7 +18,7 @@
 
     type JoinCodeNews = {
         msg: string
-        createdCandidates: CreatedCandidateTB[]
+        sortedCandidates: SortedCandidates[]
         errors: JoinCodeValidation
     };
 
@@ -27,14 +30,13 @@
         joinCodeLoader = true;
         return async ({ result, update }) => 
         {
-            const {status, data: {msg, createdCandidates, errors} } = result as ServerNews<JoinCodeNews>;
+            const {status, data: {msg, sortedCandidates, errors} } = result as ServerNews<JoinCodeNews>;
                 
             switch (status) {
                 case 200:
-                    $realVoterState.createdCandidates = createdCandidates;
-                    console.log($realVoterState.createdCandidates)
                     toast.success("Successfully joined!", {description: msg});
                     joinCodeLoader = false;
+                    invalidateAll();
                     break;
                 
                 case 402:
@@ -55,12 +57,20 @@
         };
     };
 
+    export let data: PageServerData;
+
+    onMount( () => {
+        $navState.defaultNav = $navState.voterNav;
+        $navState.session = data.session;
+    });
+ 
+    $: sortedCandidates = data.sortedCandidates;
+    
 </script>
 
 
-    
-{#if $realVoterState.createdCandidates}
-    <VotingChamber />
+{#if sortedCandidates.length }
+    <VotingChamber {sortedCandidates} />
 {:else}
     <div class="flex flex-col gap-4 sm:max-w-xl mx-auto mt-[10dvh]">
         <form method="POST" action="?/joinCode" enctype="multipart/form-data" use:enhance={joinCodeNews} class="flex flex-col gap-2" >

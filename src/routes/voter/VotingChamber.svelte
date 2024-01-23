@@ -1,37 +1,11 @@
 <script lang="ts">
-	import { voterState } from "$lib";
     import * as Table from "$lib/components/ui/table";
     import { Separator } from "$lib/components/ui/separator";
     import { realVoterState } from "$lib";
-	import { onMount } from "svelte";
-	import type { CreatedCandidateTB, SortedCandidates } from "$lib/types";
+	import type { SortedCandidates } from "$lib/types";
+
+    export let sortedCandidates: SortedCandidates[];
     
-    
-    onMount( () => {
-
-        let sortedCandites: SortedCandidates[] = [];
-
-        $realVoterState.createdPositions?.map( outerItem => {
-
-            let sortedCreatedCandidates: CreatedCandidateTB[] = [];
-
-            $realVoterState.createdCandidates?.map(innerItem => {
-                if(outerItem.position_name === innerItem.position_name){
-                    sortedCreatedCandidates.push(innerItem)
-                }
-            });
-
-            sortedCandites.push({
-                position_name: outerItem.position_name,
-                vote_limit: outerItem.vote_limit,
-                candidates: sortedCreatedCandidates
-            })
-        });
-
-        $realVoterState.sortedCandidates = sortedCandites;
-    });
-
-
 </script>
 
 <div class="mx-auto sm:max-w-[90%]">
@@ -41,7 +15,7 @@
 </div>
 <Separator class="my-4 sm:max-w-[90%] mx-auto" />
 
-{#each $realVoterState.sortedCandidates ?? [] as sortedCandidate }
+{#each sortedCandidates as sortedCandidate }
 
     {#if sortedCandidate.candidates.length}
         <div class="mx-auto max-h-[40dvh] sm:max-w-[90%] overflow-auto  md:block mt-[10dvh]">

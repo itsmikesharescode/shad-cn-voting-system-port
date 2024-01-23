@@ -86,8 +86,6 @@ export const voterState = writable({
 
 // voter state management
 export const realVoterState = writable({
-    createdCandidates:<CreatedCandidateTB[] | null> null,
-    createdPositions:<CreatedPositionTB[] | null> null,
     sortedCandidates:<SortedCandidates[] | null> null,
 })
 
