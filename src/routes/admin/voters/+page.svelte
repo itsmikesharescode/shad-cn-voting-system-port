@@ -9,8 +9,9 @@
 	import { dateConvert } from "$lib/helpers/convertDate";
 	import DeleteVoter from "./DeleteVoter.svelte";
 
-    onMount( () => {
+    onMount( async () => {
         $navState.activeItem = "/admin/voters";
+        
     })
 
 </script>

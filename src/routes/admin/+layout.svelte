@@ -12,7 +12,7 @@
         $positionState.createdPositions = data.positions.data;
         $candidateState.createdCandidates = data.candidates.data;
         $voterState.createdVoters = data.createdVoters.data;
-    })
+    });
 
 </script>
 

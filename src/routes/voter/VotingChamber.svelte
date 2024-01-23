@@ -3,6 +3,8 @@
     import { Separator } from "$lib/components/ui/separator";
     import { realVoterState } from "$lib";
 	import type { SortedCandidates } from "$lib/types";
+	import { dateConvert } from "$lib/helpers/convertDate";
+	import CastVote from "./CastVote.svelte";
 
     export let sortedCandidates: SortedCandidates[];
     
@@ -32,7 +34,7 @@
                         <Table.Head class="w-full">Candidate Name</Table.Head>
                         <Table.Head class="w-full">Organization</Table.Head>
                         <Table.Head class="w-full">Total Votes</Table.Head>
-                        <Table.Head>Date Created</Table.Head>
+                        <Table.Head>Date Added</Table.Head>
                         <Table.Head class="">Options</Table.Head>
                     </Table.Row>
                 </Table.Header>
@@ -43,9 +45,10 @@
                             <Table.Cell class="font-medium">{candidate.candidate_name}</Table.Cell> 
                             <Table.Cell class="truncate">{candidate.candidate_organization}</Table.Cell>
                             <Table.Cell class="truncate text-center">0</Table.Cell>
+                            <Table.Cell class="truncate">{dateConvert(candidate.created_at)}</Table.Cell>
                             <Table.Cell class="flex gap-2 items-center">
                                 
-                                <!-- <DeleteVoter {voter} /> -->
+                               <CastVote {candidate} />
                                 
                             </Table.Cell>
                         </Table.Row>

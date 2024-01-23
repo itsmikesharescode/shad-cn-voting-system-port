@@ -99,7 +99,7 @@
 
           
             <Drawer.Footer class="flex gap-2">
-                <form method="POST" action="?/deletePosition" enctype="multipart/form-data" use:enhance={deleteVoterNews} >
+                <form method="POST" action="?/deleteVoter" enctype="multipart/form-data" use:enhance={deleteVoterNews} >
                     <input name="voterRef" type="hidden" class="hidden" value={voterRef} />
                     <Button type="submit" variant="destructive" class="w-full">
                         <MikeLoader name="Continue" loader={deleteVoterLoader} loader_name="Deleting.." />

@@ -1,9 +1,10 @@
 import { fail, type Actions, redirect } from "@sveltejs/kit";
 import type { ZodError } from "zod";
 import { joinCodeSchema } from "$lib/helpers/schemas/realVoterSchema";
-import type { PostgrestError } from "@supabase/supabase-js";
+import type { PostgrestError, Session } from "@supabase/supabase-js";
 import type { PageServerLoad } from "./$types";
 import type { CreatedCandidateTB, SortedCandidates } from "$lib/types";
+import { basicDecrypt } from "$lib/helpers/encryption";
 
 export const load: PageServerLoad = async ({locals: {getSession, supabase}}) => {
 
@@ -49,7 +50,7 @@ export const load: PageServerLoad = async ({locals: {getSession, supabase}}) => 
             });
 
             return sortedCandidates;
-        }
+        };
         
         return {
             sortedCandidates: await sortCandidates(),
@@ -66,7 +67,7 @@ export const load: PageServerLoad = async ({locals: {getSession, supabase}}) => 
 
 export const actions: Actions = {
     
-    joinCode: async ({request, locals: {supabase, getSession} }) => 
+    joinCode: async ({request, locals: {supabase} }) => 
     {
         const formData = Object.fromEntries(await request.formData());
 
@@ -100,4 +101,55 @@ export const actions: Actions = {
             return fail(403, {errors: fieldErrors});
         };
     },
+
+    castVote: async ({request, locals: {supabase}}) => 
+    {
+        const formData = await request.formData();
+        const candidateRef: CreatedCandidateTB = JSON.parse(basicDecrypt(formData.get("candidateRef") as string));
+        const sessionRef: Session = JSON.parse(basicDecrypt(formData.get("sessionRef") as string));
+
+        if(sessionRef){
+
+            const {data: checkVoteLimit, error: checkVoteLimitError} = await supabase.from("created_position").select("vote_limit").match({position_name: candidateRef.position_name, share_code: candidateRef.share_code}) as {data: {vote_limit: number}[], error: PostgrestError | null};
+
+            if(checkVoteLimitError) return fail(402, {msg: checkVoteLimitError.message});
+            else if(checkVoteLimit){
+
+                const voteLimit = checkVoteLimit[0].vote_limit;
+                
+                const {data: checkVoteCount, error: checkVoteCountError} = await supabase.from("voted_candidates").select("candidate_name").match({user_id: sessionRef.user.id, position_name: candidateRef.position_name, share_code: candidateRef.share_code}) as {data: {candidate_name: string}[], error: PostgrestError | null};
+                
+                if(checkVoteCountError) return fail(402, {msg: checkVoteCountError.message});
+                else if(checkVoteCount){
+                    
+                    const lengthOfVotes = checkVoteCount.length;
+
+                    if(voteLimit === lengthOfVotes) return fail(402, {msg: "You have reached the limit of votes for this position."});
+
+                    else{
+
+                        const isAlreadyVote = checkVoteCount.find(item => item.candidate_name === candidateRef.candidate_name);
+                        
+                        if(isAlreadyVote) return fail(402, {msg: "You have already voted for this candidate."});
+                        else{
+                            const { error:insertError } = await supabase.from("voted_candidates").insert([{
+                                user_id: sessionRef.user.id,
+                                position_name: candidateRef.position_name,
+                                candidate_name: candidateRef.candidate_name,
+                                candidate_organization: candidateRef.candidate_organization,
+                                candidate_agenda: candidateRef.candidate_agenda,
+                                share_code: candidateRef.share_code,
+                            }]);
+
+                            if(insertError) return fail(402, {msg: insertError.message});
+                            else return fail(200, {msg: "Successfully voted!"});
+                        };
+                    };
+
+                };
+            };
+            
+        };
+        
+    }
 };
