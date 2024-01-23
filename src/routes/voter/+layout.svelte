@@ -9,8 +9,9 @@
     onMount( () => {
         $navState.defaultNav = $navState.voterNav;
         $navState.session = data.session;
-        $realVoterState.createdCandidates = data.createdCandidates.data;
-        console.log(data.createdCandidates.data)
+        $realVoterState.createdCandidates = data.createdCandidates.data?.length ? data.createdCandidates.data : null; //force to be null inorder to regain reactivity
+    
+        
     });
 
 </script>
