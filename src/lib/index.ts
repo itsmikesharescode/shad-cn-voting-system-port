@@ -2,7 +2,7 @@ import type { Session } from "@supabase/supabase-js";
 import {writable} from "svelte/store";
 import type { Writable } from "svelte/store";
 
-import type { CreatedCandidateTB, CreatedPositionTB, CreatedVotersTB } from "./types";
+import type { CreatedCandidateTB, CreatedPositionTB, CreatedVotersTB, SortedCandidates } from "./types";
 
 export const navState = writable({
     activeItem: "",
@@ -87,5 +87,7 @@ export const voterState = writable({
 // voter state management
 export const realVoterState = writable({
     createdCandidates:<CreatedCandidateTB[] | null> null,
+    createdPositions:<CreatedPositionTB[] | null> null,
+    sortedCandidates:<SortedCandidates[] | null> null,
 })
 

@@ -20,7 +20,16 @@ export const load: LayoutServerLoad = async ({locals: {supabase, getSession}}) =
             return await supabase.from("created_candidate").select(candidateQuery).match({share_code: session?.user.user_metadata.share_code});
         };
 
-        return {createdCandidates: await getCandidates(), session};
+        const getPositions = async () =>
+        {
+            return await supabase.from("created_position").select("id, created_at, position_name, vote_limit, share_code").match({share_code: session?.user.user_metadata.share_code});
+        };
+
+        return {
+            createdCandidates: await getCandidates(), 
+            createdPositions: await getPositions(),
+            session
+        };
 
     }else if(data === "Admin"){
 

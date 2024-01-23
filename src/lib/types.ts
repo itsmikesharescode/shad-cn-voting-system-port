@@ -32,3 +32,9 @@ export type CreatedVotersTB = {
     username: string
     share_code: string
 }
+
+export type SortedCandidates = {
+    position_name: string
+    vote_limit: number
+    candidates: CreatedCandidateTB[]
+}

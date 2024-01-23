@@ -10,8 +10,7 @@
         $navState.defaultNav = $navState.voterNav;
         $navState.session = data.session;
         $realVoterState.createdCandidates = data.createdCandidates.data?.length ? data.createdCandidates.data : null; //force to be null inorder to regain reactivity
-    
-        
+        $realVoterState.createdPositions = data.createdPositions.data?.length ? data.createdPositions.data : null; //force to be null inorder to regain reactivity
     });
 
 </script>

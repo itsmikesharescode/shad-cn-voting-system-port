@@ -7,6 +7,7 @@
     import MikeLoader from "$lib/components/mikeUI/MikeLoader.svelte";
 	import { toast } from "svelte-sonner";
 	import { realVoterState } from "$lib";
+	import VotingChamber from "./VotingChamber.svelte";
 
     type JoinCodeValidation = {
         shareCode: string[]
@@ -56,11 +57,12 @@
 
 </script>
 
-<div class="flex flex-col gap-4 sm:max-w-xl mx-auto mt-[10dvh]">
+
     
-    {#if $realVoterState.createdCandidates}
-        asdasd
-    {:else}
+{#if $realVoterState.createdCandidates}
+    <VotingChamber />
+{:else}
+    <div class="flex flex-col gap-4 sm:max-w-xl mx-auto mt-[10dvh]">
         <form method="POST" action="?/joinCode" enctype="multipart/form-data" use:enhance={joinCodeNews} class="flex flex-col gap-2" >
             {#each inputErrors?.shareCode ?? [] as err }
                 <p class="text-red-700 font-bold text-xs px-2 flex w-full max-w-sm items-center space-x-2 mx-auto">{err}</p>
@@ -75,6 +77,7 @@
         </form>
 
         <h3 class="scroll-m-20 text-2xl font-semibold tracking-tight text-center">You haven't joined any voting code. Join now!</h3>
-    {/if}
-</div>
+    </div>
+{/if}
+
 
