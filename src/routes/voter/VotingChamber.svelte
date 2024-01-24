@@ -2,12 +2,12 @@
     import * as Table from "$lib/components/ui/table";
     import { Separator } from "$lib/components/ui/separator";
     import { realVoterState } from "$lib";
-	import type { SortedCandidates } from "$lib/types";
+	import type { CreatedCandidateTB, FinalSort, SortedCandidates, VotedCandidatesTB } from "$lib/types";
 	import { dateConvert } from "$lib/helpers/convertDate";
 	import CastVote from "./CastVote.svelte";
 
-    export let sortedCandidates: SortedCandidates[];
-    
+    export let finalSort: FinalSort[];
+
 </script>
 
 <div class="mx-auto sm:max-w-[90%]">
@@ -17,17 +17,16 @@
 </div>
 <Separator class="my-4 sm:max-w-[90%] mx-auto" />
 
-{#each sortedCandidates as sortedCandidate }
+{#each finalSort as sortedCandidate }
 
-    {#if sortedCandidate.candidates.length}
-        <div class="mx-auto max-h-[40dvh] sm:max-w-[90%] overflow-auto  md:block mt-[10dvh]">
-            
-            <div class="truncate w-full flex justify-between ">
-                <h3 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-3xl">{sortedCandidate.position_name}</h3>
-                <h3 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-3xl">Max Vote: {sortedCandidate.vote_limit}</h3>
-                
-            </div>
+    {#if sortedCandidate.candidateAndVotes.length}
 
+        <div class="mx-auto sm:max-w-[90%] overflow-auto  flex justify-between mt-[10dvh]">
+            <h3 class="scroll-m-20 text-xl font-extrabold tracking-tight lg:text-3xl">{sortedCandidate.position_name}</h3>
+            <h3 class="scroll-m-20 text-xl font-extrabold tracking-tight lg:text-3xl">Max Vote: {sortedCandidate.vote_limit}</h3>
+        </div>
+
+        <div class="mx-auto max-h-[40dvh] sm:max-w-[90%] overflow-auto  md:block">
             <Table.Root class="mt-2">
                 <Table.Header class="truncate">
                     <Table.Row>
@@ -40,11 +39,11 @@
                 </Table.Header>
 
                 <Table.Body> 
-                    {#each sortedCandidate.candidates as candidate, index}
+                    {#each sortedCandidate.candidateAndVotes as candidate, index}
                         <Table.Row>
                             <Table.Cell class="font-medium">{candidate.candidate_name}</Table.Cell> 
                             <Table.Cell class="truncate">{candidate.candidate_organization}</Table.Cell>
-                            <Table.Cell class="truncate text-center">0</Table.Cell>
+                            <Table.Cell class="truncate text-center">{candidate.total_votes}</Table.Cell>
                             <Table.Cell class="truncate">{dateConvert(candidate.created_at)}</Table.Cell>
                             <Table.Cell class="flex gap-2 items-center">
                                 

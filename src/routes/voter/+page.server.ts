@@ -3,7 +3,7 @@ import type { ZodError } from "zod";
 import { joinCodeSchema } from "$lib/helpers/schemas/realVoterSchema";
 import type { PostgrestError, Session } from "@supabase/supabase-js";
 import type { PageServerLoad } from "./$types";
-import type { CreatedCandidateTB, SortedCandidates } from "$lib/types";
+import type { CreatedCandidateTB, FinalSort, SortedCandidateAndVotes, SortedCandidates, VotedCandidatesTB } from "$lib/types";
 import { basicDecrypt } from "$lib/helpers/encryption";
 
 export const load: PageServerLoad = async ({locals: {getSession, supabase}}) => {
@@ -27,6 +27,12 @@ export const load: PageServerLoad = async ({locals: {getSession, supabase}}) => 
             return await supabase.from("created_position").select("id, created_at, position_name, vote_limit, share_code").match({share_code: session?.user.user_metadata.share_code});
         };
 
+        const getTotalVotes = async () => 
+        {
+            return await supabase.from("voted_candidates").select("candidate_name").match({share_code: session?.user.user_metadata.share_code});
+        };
+
+        //algorithm for sorting position and candidates
         const sortCandidates = async () => 
         {
             const candidates = await getCandidates();
@@ -39,7 +45,9 @@ export const load: PageServerLoad = async ({locals: {getSession, supabase}}) => 
                 let tempArray: CreatedCandidateTB[] = [];
 
                 candidates.data?.map(innerItem => {
+
                     outerItem.position_name === innerItem.position_name ? tempArray.push(innerItem) : null;
+                    
                 });
 
                 sortedCandidates.push({
@@ -51,11 +59,76 @@ export const load: PageServerLoad = async ({locals: {getSession, supabase}}) => 
 
             return sortedCandidates;
         };
-        
+
+       //algorithm for sorting votes
+        const sortCandidateAndVote = async () => 
+        {
+            const candidates = await getCandidates();
+            const totalVotes = await getTotalVotes();
+
+            let sortedCandidateAndVotes: SortedCandidateAndVotes[] = [];
+
+            candidates.data?.map(outerItem => {
+
+                let tempArray: {candidate_name: string}[] = [];
+
+                totalVotes.data?.map(innerItem => {
+                    outerItem.candidate_name === innerItem.candidate_name ? tempArray.push(innerItem) : null;
+                });
+
+                sortedCandidateAndVotes.push({
+                    id: outerItem.id,
+                    created_at: outerItem.created_at,
+                    position_name: outerItem.position_name,
+                    candidate_name: outerItem.candidate_name,
+                    candidate_organization: outerItem.candidate_organization,
+                    candidate_agenda: outerItem.candidate_agenda,
+                    share_code: outerItem.share_code,
+                    total_votes: tempArray.length,
+                });
+
+            });
+
+            return sortedCandidateAndVotes;
+
+        };
+
+        //final algo since im low IQ
+        const finalSort = async () => 
+        {
+            const candidateAndVotes = await sortCandidateAndVote();
+            const sortedCandidates = await sortCandidates();
+
+            let finalSortedCandidates: FinalSort[] = [];
+
+            sortedCandidates.map(outerItem => {
+
+                let tempArray: SortedCandidateAndVotes[] = [];
+
+                outerItem.candidates.map(innerItem => {
+
+                    candidateAndVotes.map(deepItem => {
+                        innerItem.candidate_name === deepItem.candidate_name ? tempArray.push(deepItem) : null;
+                    });
+
+                });
+
+                finalSortedCandidates.push({
+                    position_name: outerItem.position_name,
+                    vote_limit: outerItem.vote_limit,
+                    candidateAndVotes: tempArray,
+                });
+            });
+
+            return finalSortedCandidates;
+        };
+
         return {
             sortedCandidates: await sortCandidates(),
-            session
-        };
+            finalSort: await finalSort(),
+            votesData: await getTotalVotes(),
+            session,
+        }
 
     }else if(data === "Admin"){
 
@@ -97,7 +170,6 @@ export const actions: Actions = {
         } catch (error) {
             const zodError = error as ZodError;
             const {fieldErrors} = zodError.flatten();
-            console.log(fieldErrors)
             return fail(403, {errors: fieldErrors});
         };
     },
@@ -108,8 +180,7 @@ export const actions: Actions = {
         const candidateRef: CreatedCandidateTB = JSON.parse(basicDecrypt(formData.get("candidateRef") as string));
         const sessionRef: Session = JSON.parse(basicDecrypt(formData.get("sessionRef") as string));
 
-        if(sessionRef){
-
+        if(sessionRef){ 
             const {data: checkVoteLimit, error: checkVoteLimitError} = await supabase.from("created_position").select("vote_limit").match({position_name: candidateRef.position_name, share_code: candidateRef.share_code}) as {data: {vote_limit: number}[], error: PostgrestError | null};
 
             if(checkVoteLimitError) return fail(402, {msg: checkVoteLimitError.message});

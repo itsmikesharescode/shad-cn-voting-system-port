@@ -65,12 +65,13 @@
     });
  
     $: sortedCandidates = data.sortedCandidates;
+    $: finalSort = data.finalSort;
     
 </script>
 
 
 {#if sortedCandidates.length }
-    <VotingChamber {sortedCandidates} />
+    <VotingChamber {finalSort} />
 {:else}
     <div class="flex flex-col gap-4 sm:max-w-xl mx-auto mt-[10dvh]">
         <form method="POST" action="?/joinCode" enctype="multipart/form-data" use:enhance={joinCodeNews} class="flex flex-col gap-2" >

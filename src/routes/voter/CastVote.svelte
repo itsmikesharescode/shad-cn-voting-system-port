@@ -6,13 +6,14 @@
 	import type { SubmitFunction } from "@sveltejs/kit";
 	import { enhance } from "$app/forms";
     import MikeLoader from "$lib/components/mikeUI/MikeLoader.svelte";
-	import type { CreatedCandidateTB, ServerNews } from "$lib/types";
+	import type { CreatedCandidateTB, ServerNews, SortedCandidateAndVotes } from "$lib/types";
 	import { basicEncrypt } from "$lib/helpers/encryption";
 	import { toast } from "svelte-sonner";
     import {voterState, navState} from "$lib";
+	import { invalidateAll } from "$app/navigation";
     
 
-    export let candidate: CreatedCandidateTB;
+    export let candidate: SortedCandidateAndVotes;
 
     let voteCandidateLoader = false;
     let desktopDialog = false;
@@ -31,6 +32,7 @@
                     voteCandidateLoader = false;
                     desktopDialog = false;
                     mobileDialog = false;
+                    invalidateAll();
                     break;
             
                 case 402:

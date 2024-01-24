@@ -38,3 +38,30 @@ export type SortedCandidates = {
     vote_limit: number
     candidates: CreatedCandidateTB[]
 }
+
+export type SortedCandidateAndVotes = {
+    id: number
+    created_at: string
+    position_name: string
+    candidate_name: string
+    candidate_organization: string
+    candidate_agenda: string
+    share_code: string
+    total_votes: number
+}
+
+export type FinalSort = {
+    position_name: string
+    vote_limit: number
+    candidateAndVotes: SortedCandidateAndVotes[]
+}
+
+export type VotedCandidatesTB = {
+    id: number
+    created_at: string
+    position_name: string
+    candidate_name: string
+    candidate_organization: string
+    candidate_agenda: string
+    share_code: string
+}
