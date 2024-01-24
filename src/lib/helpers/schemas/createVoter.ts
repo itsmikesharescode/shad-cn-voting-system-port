@@ -10,4 +10,5 @@ export const createVoterSchema = z.object({
 
 export const deleteVoterSchema = z.object({
     voterRef: z.string().min(1, {message: "Voter reference must be not empty"}),
+    
 })

@@ -15,6 +15,7 @@ export const actions: Actions = {
         try {
             const result = createVoterSchema.parse(formData);
             const shareCode = basicDecrypt(result.shareCode);
+            
             if(result.confirmPass === result.password){
                 const queryVoters = "id, created_at, user_id, user_email, username";
                 const {data: {user}, error:createUserError} = await supabaseAdmin.auth.admin.createUser({
