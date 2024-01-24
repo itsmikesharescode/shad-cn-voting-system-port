@@ -1,38 +1,46 @@
-# create-svelte
+## DYNAMIC VERSION OF SIMPLE VOTING SYSTEM
+This is a port version of shad ui but this time its dynamic! unlimited admin account and unlimited voter account!
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+## Developed from the Ground Up:
+I single-handedly constructed this project from the ground up, utilizing my coding expertise to bring its vision to life. This was due to being the sole team member with the necessary programming capabilities.
 
-## Creating a project
 
-If you're seeing this, you've probably already done this step. Congrats!
+## About This Project
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Dual Perspectives for Tailored User Experiences:
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+This system seamlessly integrates two distinct perspectives, each designed to empower specific user roles with the functionalities they need:
 
-## Developing
+## Voter Perspective:
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Grants users the ability to engage in essential CRUD (Create, Read, Update, Delete) operations within the voting realm.
+Key functionalities include:
 
-```bash
-npm run dev
+Casting votes.
+Canceling previously cast votes (offering flexibility and adaptability).
+Accessing comprehensive voting data, such as total vote counts and historical voting records (enabling informed decision-making and analysis).
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+## Admin Perspective:
 
-## Building
+Unleashes an elevated level of control and administrative capabilities.
+Encompasses a wider spectrum of CRUD actions, including:
 
-To create a production version of your app:
+Comprehensive management of voter information, extending to deletion of records along with associated data from auto-cascaded tables (ensuring data integrity and streamlining administrative tasks).
+Overseeing other crucial administrative tasks necessary for system maintenance and optimization.
 
-```bash
-npm run build
-```
+## Official Live Website
+https://voting-system-port.vercel.app/
 
-You can preview the production build with `npm run preview`.
+## Technology used in the project
+Sveltekit, for its backend interaction and server routing
+https://kit.svelte.dev/
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+Svelte, for its frontend
+https://svelte.dev/
+
+TailwindCSS, for its rapid styling
+https://tailwindcss.com/
+
+Supabase, for its cloud database it is like a postgrest version of firebase
+https://supabase.com/
+
