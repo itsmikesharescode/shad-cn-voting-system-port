@@ -18,6 +18,6 @@
 
 <Nav />
 
-<div class=" px-4 py-[14dvh]">
+<div class=" px-4 py-[14dvh] min-h-screen">
     <slot/>
 </div>
